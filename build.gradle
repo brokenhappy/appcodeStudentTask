@@ -21,6 +21,7 @@ dependencies {
     implementation 'org.openjfx:javafx:11.0.2'
     implementation 'org.openjfx:javafx-base:11.0.2'
     implementation 'org.openjfx:javafx-controls:11.0.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0'
 }
 
 compileKotlin {
