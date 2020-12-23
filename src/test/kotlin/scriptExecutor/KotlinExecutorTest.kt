@@ -10,8 +10,7 @@ import kotlin.math.absoluteValue
 
 @Tag("slow")
 class KotlinExecutorTest {
-    class KotlinCompileCommandStub(override val kotlinCompileCommand: String) : KotlinCompileCommandProvider
-    private val commandProvider = KotlinCompileCommandStub("/Users/woutwerkman/.sdkman/candidates/kotlin/current/bin/kotlinc")
+    private val commandProvider = KotlinCompileCommand("/Users/woutwerkman/.sdkman/candidates/kotlin/current/bin/kotlinc")
     private val subject = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver(commandProvider), commandProvider)
 
     @Test
@@ -20,7 +19,7 @@ class KotlinExecutorTest {
         val errors = mutableListOf<String>()
         val output = mutableListOf<String>()
 
-        subject.run(
+        subject.runAndGetExitCode(
             "",
             { output.add(it) },
             { errors.add(it) }
@@ -36,7 +35,7 @@ class KotlinExecutorTest {
         val errors = mutableListOf<String>()
         val output = mutableListOf<String>()
 
-        subject.run(
+        subject.runAndGetExitCode(
             "1.nonExistentFunction()",
             { output.add(it) },
             { errors.add(it) }
@@ -50,7 +49,7 @@ class KotlinExecutorTest {
     @Test
     @Tags(Tag("slow"), Tag("unstable"), Tag("DependsOnSystemTime"))
     fun `test that events are raised during execution`() {
-        subject.run(
+        subject.runAndGetExitCode(
             """
                 println(System.currentTimeMillis())
                 Thread.sleep(500)
@@ -59,7 +58,7 @@ class KotlinExecutorTest {
             """,
             { outputLine ->
                 if (!outputLine.isLong())
-                    return@run
+                    return@runAndGetExitCode
                 assertNowIsCloseEnoughTo(outputLine.toLong())
             },
             { }

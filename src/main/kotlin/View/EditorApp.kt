@@ -1,3 +1,5 @@
+package View
+
 import tornadofx.App
 
 class EditorApp: App(EditorView::class) {

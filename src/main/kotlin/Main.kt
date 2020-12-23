@@ -1,3 +1,5 @@
+import View.EditorApp
+
 class Main {
     companion object {
         @JvmStatic

@@ -9,13 +9,25 @@ class KotlinExecutor(
     private val warningResolver: KotlinCompileCommonWarningResolver,
     private val kotlinCompileCommandProvider: KotlinCompileCommandProvider
 ) {
+    class AlreadyRunningException: Exception()
+
+    @Volatile
+    private var _isRunning = false
+    val isRunning
+        get() = _isRunning
+
     private fun Process.isNotFinished() = kotlin.runCatching { exitValue() }.isFailure
 
-    fun run(
+    @Throws(AlreadyRunningException::class)
+    fun runAndGetExitCode(
         @Language("kts") kotlinScript: String,
         inputEvent: (String) -> Unit,
         errorEvent: (String) -> Unit
-    ) {
+    ): Int {
+        if (_isRunning)
+            throw AlreadyRunningException()
+
+        _isRunning = true
         createTemporaryScriptFile(kotlinScript).use { file ->
             val process = startScriptRunnerProcessDisablingWarnings(file.absolutePath)
 
@@ -33,6 +45,8 @@ class KotlinExecutor(
 
             errorReader.flush()
             inputReader.flush()
+            _isRunning = false
+            return process.exitValue()
         }
     }
 
