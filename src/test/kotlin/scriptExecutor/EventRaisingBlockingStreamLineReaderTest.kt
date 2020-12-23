@@ -65,11 +65,11 @@ class EventRaisingBlockingStreamLineReaderTest {
     fun `Test that it raises all lines if it is flushed`() {
         val raisedLines = mutableListOf<String>()
         EventRaisingBlockingStreamLineReader("""
-            How do you make boiling water
+            How do you make holy water?
             You boil the hell out of it
         """.trimIndent().byteInputStream()) { raisedLines.add(it) }.flush()
 
-        assertEquals(listOf("How do you make boiling water", "You boil the hell out of it"), raisedLines)
+        assertEquals(listOf("How do you make holy water?", "You boil the hell out of it"), raisedLines)
     }
 
     @Test
