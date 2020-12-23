@@ -19,7 +19,7 @@ class KotlinExecutorTest {
         val errors = mutableListOf<String>()
         val output = mutableListOf<String>()
 
-        subject.runAndGetExitCode(
+        subject.run(
             "",
             { output.add(it) },
             { errors.add(it) }
@@ -35,7 +35,7 @@ class KotlinExecutorTest {
         val errors = mutableListOf<String>()
         val output = mutableListOf<String>()
 
-        subject.runAndGetExitCode(
+        subject.run(
             "1.nonExistentFunction()",
             { output.add(it) },
             { errors.add(it) }
@@ -49,7 +49,7 @@ class KotlinExecutorTest {
     @Test
     @Tags(Tag("slow"), Tag("unstable"), Tag("DependsOnSystemTime"))
     fun `test that events are raised during execution`() {
-        subject.runAndGetExitCode(
+        subject.run(
             """
                 println(System.currentTimeMillis())
                 Thread.sleep(500)
@@ -58,7 +58,7 @@ class KotlinExecutorTest {
             """,
             { outputLine ->
                 if (!outputLine.isLong())
-                    return@runAndGetExitCode
+                    return@run
                 assertNowIsCloseEnoughTo(outputLine.toLong())
             },
             { }
@@ -67,8 +67,8 @@ class KotlinExecutorTest {
 
     private infix fun Long.difference(other: Long) = (this - other).absoluteValue
 
-    private fun assertNowIsCloseEnoughTo(timeItShouldBeNow: Long) {
-        val differenceBetweenNowAndWhatItShouldBe = timeItShouldBeNow difference System.currentTimeMillis()
+    private fun assertNowIsCloseEnoughTo(timeItShouldBeNowAsTimestamp: Long) {
+        val differenceBetweenNowAndWhatItShouldBe = timeItShouldBeNowAsTimestamp difference System.currentTimeMillis()
         assertTrue(
             differenceBetweenNowAndWhatItShouldBe < 100,
             "time difference should have been less then 100ms, but was $differenceBetweenNowAndWhatItShouldBe"
