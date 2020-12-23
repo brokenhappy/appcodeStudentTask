@@ -83,16 +83,16 @@ class EditorView : View() {
 
     private fun generateNodesForErrorLine(errorAnalyzer: KotlinErrorAnalyzer, errorLine: String) =
         errorAnalyzer.analyze("foo.kts", errorLine) // TODO: inject temp file name
-            .filter { !(it is KotlinErrorAnalyzer.ErrorChunk.Text && it.text.isEmpty()) }
+            .filter { !(it is KotlinErrorAnalyzer.ErrorPart.Text && it.text.isEmpty()) }
             .map { errorChunk ->
                 when (errorChunk) {
-                    is KotlinErrorAnalyzer.ErrorChunk.CodeLink -> hyperlink("foo.kts:$errorChunk") {
+                    is KotlinErrorAnalyzer.ErrorPart.CodeLink -> hyperlink("foo.kts:$errorChunk") { // TODO: inject temp file name
                         style {
                             textFill = Color.BLUE
                         }
                         setOnMouseClicked { codeInput.setCursorAt(errorChunk.line, errorChunk.column ?: 1) }
                     }
-                    is KotlinErrorAnalyzer.ErrorChunk.Text -> text(errorChunk.text)
+                    is KotlinErrorAnalyzer.ErrorPart.Text -> text(errorChunk.text)
                 }
             } + Text("\n")
 
