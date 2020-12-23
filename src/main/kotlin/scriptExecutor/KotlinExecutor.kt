@@ -12,22 +12,19 @@ class KotlinExecutor(
     class AlreadyRunningException: Exception()
 
     @Volatile
-    private var _isRunning = false
-    val isRunning
-        get() = _isRunning
+    private var isRunning = false
 
     private fun Process.isNotFinished() = kotlin.runCatching { exitValue() }.isFailure
 
     @Throws(AlreadyRunningException::class)
-    fun runAndGetExitCode(
+    fun run(
         @Language("kts") kotlinScript: String,
         inputEvent: (String) -> Unit,
-        errorEvent: (String) -> Unit
-    ): Int {
-        if (_isRunning)
+        errorEvent: (String) -> Unit,
+    ): ExitCode {
+        if (isRunning)
             throw AlreadyRunningException()
 
-        _isRunning = true
         createTemporaryScriptFile(kotlinScript).use { file ->
             val process = startScriptRunnerProcessDisablingWarnings(file.absolutePath)
 
@@ -45,8 +42,8 @@ class KotlinExecutor(
 
             errorReader.flush()
             inputReader.flush()
-            _isRunning = false
-            return process.exitValue()
+            isRunning = false
+            return ExitCode(process.exitValue())
         }
     }
 
@@ -55,11 +52,11 @@ class KotlinExecutor(
         ProcessBuilder(
             kotlinCompileCommandProvider.kotlinCompileCommand, "-script", scriptPath, "-nowarn"
         )
-        .directory(File("/Users/woutwerkman/Documents/projects/AppCodeStudentTask/src/main/kotlin"))
+        .directory(File("/Users/woutwerkman/Documents/projects/AppCodeStudentTask/src/main/kotlin")) // TODO: allow other people to use this
         .start()
 
     private fun createTemporaryScriptFile(kotlinScript: String) = object : Closeable {
-        private val file = File("foo.kts").apply {
+        private val file = File("foo.kts").apply { // TODO:  use injected file
             createNewFile()
             deleteOnExit()
             FileWriter(absoluteFile).use { it.write(kotlinScript) }
