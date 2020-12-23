@@ -22,7 +22,7 @@ class EventRaisingBlockingStreamLineReader(private val stream: InputStream, priv
     private fun getLinesSinceLastRead(bytesToRead: Int): List<String> {
         val newReadString = String(stream.readNBytes(bytesToRead))
         return ((currentWorkingString ?: "") + newReadString)
-            .split("\n")
+            .lines()
     }
 
     fun flush() {
