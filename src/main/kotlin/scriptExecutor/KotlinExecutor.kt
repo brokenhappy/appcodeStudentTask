@@ -10,10 +10,6 @@ import javax.inject.Inject
 class KotlinExecutor @Inject constructor(
     private val warningResolver: KotlinCompileCommonWarningResolver,
 ) : ScriptExecutor {
-    class AlreadyRunningException : RuntimeException()
-
-    @Volatile
-    private var isRunning = false
 
     private fun Process.isNotFinished() = runCatching { exitValue() }.isFailure
 
@@ -22,9 +18,6 @@ class KotlinExecutor @Inject constructor(
         inputEvent: (String) -> Unit,
         errorEvent: (String) -> Unit,
     ): ExitCode {
-        if (isRunning)
-            throw AlreadyRunningException()
-
         createTemporaryScriptFile(kotlinScript).use { file ->
             val process = startScriptRunnerProcessDisablingWarnings(file.absolutePath)
 
@@ -42,7 +35,6 @@ class KotlinExecutor @Inject constructor(
 
             errorReader.flush()
             inputReader.flush()
-            isRunning = false
             return ExitCode(process.exitValue())
         }
     }

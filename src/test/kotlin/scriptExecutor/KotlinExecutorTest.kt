@@ -9,7 +9,7 @@ import java.lang.AssertionError
 import kotlin.math.absoluteValue
 
 @Tag("slow")
-class KotlinExecutorTest {
+internal class KotlinExecutorTest {
     private val subject = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver())
 
     @Test
@@ -42,17 +42,23 @@ class KotlinExecutorTest {
 
         assertEquals(5, errors.size)
         assertTrue(errors.first().trim().startsWith("error: unresolved reference: nonExistentFunction ("))
-        assertEmptyEnough(output, " code MUST not produce errors")
+        assertEmptyEnough(output, "code MUST not produce output")
     }
 
     @Test
     @Tag("slow")
     fun `test print statement goes to output`() {
+        val errors = mutableListOf<String>()
+        val output = mutableListOf<String>()
+
         subject.run(
             """println("test")""",
-            { assertEquals("test", it) },
-            { fail("Should not provide error, got: ($it)") }
+            { output.add(it) },
+            { errors.add(it) }
         )
+
+        assertEquals(listOf("test", ""), output)
+        assertEmptyEnough(errors, "code MUST not produce errors")
     }
 
     @Test

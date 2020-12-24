@@ -1,6 +1,6 @@
 package View
 
-import errorAnalyzer.ErrorAnalyzer
+import errorAnalyzer.ErrorAnalyzer.ErrorPart
 import errorAnalyzer.KotlinErrorAnalyzer
 import javafx.application.Platform
 import javafx.scene.control.Button
@@ -42,15 +42,9 @@ class EditorView : View() {
         }
     }
 
-    private fun TextArea.setCursorAt(lineNumber: Int, column: Int) {
-        val indexAtStartOfLine = text.split("\n").asSequence()
-            .runningFold(0) { acc, line -> acc + line.length + 1 }
-            .drop(lineNumber - 1)
-            .first()
-        // TODO: extract this to a tested place
-
+    private fun TextArea.setCursorAt(link: ErrorPart.CodeLink) {
         requestFocus()
-        positionCaret(indexAtStartOfLine + column - 1)
+        positionCaret(link.resolveIndexIn(text))
     }
 
     private fun runScript() {
@@ -78,16 +72,16 @@ class EditorView : View() {
 
     private fun generateNodesForErrorLine(errorAnalyzer: KotlinErrorAnalyzer, errorLine: String) =
         errorAnalyzer.analyze("foo.kts", errorLine) // TODO: inject temp file name
-            .filter { !(it is ErrorAnalyzer.ErrorPart.Text && it.text.isEmpty()) }
+            .filter { !(it is ErrorPart.Text && it.text.isEmpty()) }
             .map { errorPart ->
                 when (errorPart) {
-                    is ErrorAnalyzer.ErrorPart.CodeLink -> hyperlink("foo.kts:$errorPart") { // TODO: inject temp file name
+                    is ErrorPart.CodeLink -> hyperlink("foo.kts:$errorPart") { // TODO: inject temp file name
                         style {
                             textFill = Color.BLUE
                         }
-                        setOnMouseClicked { codeInput.setCursorAt(errorPart.line, errorPart.column ?: 1) }
+                        setOnMouseClicked { codeInput.setCursorAt(errorPart) }
                     }
-                    is ErrorAnalyzer.ErrorPart.Text -> text(errorPart.text)
+                    is ErrorPart.Text -> text(errorPart.text)
                 }
             } + Text("\n")
 

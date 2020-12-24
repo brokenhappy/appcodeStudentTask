@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.awt.Color
 
-class KeywordBasedCodeHighlighterTest {
+internal class KeywordBasedCodeHighlighterTest {
     @Test
     fun `test empty script gives an empty default color part`() {
         assertEquals(

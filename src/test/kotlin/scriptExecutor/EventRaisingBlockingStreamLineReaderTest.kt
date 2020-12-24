@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 
-class EventRaisingBlockingStreamLineReaderTest {
+internal class EventRaisingBlockingStreamLineReaderTest {
     @Test
     fun `Test that event is never raised if no read is ever performed`() {
         EventRaisingBlockingStreamLineReader("text that should be raised if read was performed\n".byteInputStream()) {
