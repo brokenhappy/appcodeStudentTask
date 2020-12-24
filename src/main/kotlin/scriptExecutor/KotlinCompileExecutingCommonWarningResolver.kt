@@ -1,10 +1,8 @@
 package scriptExecutor
 
-class KotlinCompileExecutingCommonWarningResolver(
-    private val commandProvider: KotlinCompileCommandProvider
-) : KotlinCompileCommonWarningResolver {
-    val alwaysPresentWarnings by lazy {
-        val process = ProcessBuilder(commandProvider.kotlinCompileCommand, "-version")
+class KotlinCompileExecutingCommonWarningResolver() : KotlinCompileCommonWarningResolver {
+    private val alwaysPresentWarnings by lazy {
+        val process = ProcessBuilder("kotlinc", "-version")
             .start()
             .apply { waitFor() }
 

@@ -9,19 +9,13 @@ import javafx.scene.text.Font
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import scriptExecutor.ExitCode
-import scriptExecutor.KotlinCompileCommand
 import scriptExecutor.KotlinCompileExecutingCommonWarningResolver
 import scriptExecutor.KotlinExecutor
 import tornadofx.*
 
 class EditorView : View() {
-    private val kotlinExecutor: KotlinExecutor
+    private val kotlinExecutor = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver())
     private val errorAnalyzer = KotlinErrorAnalyzer()
-
-    init {
-        val commandProvider = KotlinCompileCommand("/Users/woutwerkman/.sdkman/candidates/kotlin/current/bin/kotlinc")
-        kotlinExecutor = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver(commandProvider), commandProvider)
-    }
 
     private lateinit var codeOutput: Text
     private lateinit var executeButton: Button

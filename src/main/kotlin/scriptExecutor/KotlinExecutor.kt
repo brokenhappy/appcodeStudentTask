@@ -6,8 +6,7 @@ import java.io.File
 import java.io.FileWriter
 
 class KotlinExecutor(
-    private val warningResolver: KotlinCompileCommonWarningResolver,
-    private val kotlinCompileCommandProvider: KotlinCompileCommandProvider
+    private val warningResolver: KotlinCompileCommonWarningResolver
 ) {
     class AlreadyRunningException: Exception()
 
@@ -50,9 +49,8 @@ class KotlinExecutor(
 
     private fun startScriptRunnerProcessDisablingWarnings(scriptPath: String) =
         ProcessBuilder(
-            kotlinCompileCommandProvider.kotlinCompileCommand, "-script", scriptPath, "-nowarn"
+            "kotlinc", "-script", scriptPath, "-nowarn"
         )
-        .directory(File("/Users/woutwerkman/Documents/projects/AppCodeStudentTask/src/main/kotlin")) // TODO: allow other people to use this
         .start()
 
     private fun createTemporaryScriptFile(kotlinScript: String) = object : Closeable {

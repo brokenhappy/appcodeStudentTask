@@ -47,6 +47,16 @@ class KotlinExecutorTest {
     }
 
     @Test
+    @Tag("slow")
+    fun `test print statement goes to output`() {
+        subject.run(
+            """println("test")""",
+            { assertEquals("test", it) },
+            { fail("Should not provide error, got: ($it)") }
+        )
+    }
+
+    @Test
     @Tags(Tag("slow"), Tag("unstable"), Tag("DependsOnSystemTime"))
     fun `test that events are raised during execution`() {
         subject.run(
