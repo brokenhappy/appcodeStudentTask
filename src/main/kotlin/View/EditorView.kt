@@ -47,6 +47,7 @@ class EditorView : View() {
             .runningFold(0) { acc, line -> acc + line.length + 1 }
             .drop(lineNumber - 1)
             .first()
+        // TODO: extract this to a tested place
 
         requestFocus()
         positionCaret(indexAtStartOfLine + column - 1)
@@ -78,15 +79,15 @@ class EditorView : View() {
     private fun generateNodesForErrorLine(errorAnalyzer: KotlinErrorAnalyzer, errorLine: String) =
         errorAnalyzer.analyze("foo.kts", errorLine) // TODO: inject temp file name
             .filter { !(it is KotlinErrorAnalyzer.ErrorPart.Text && it.text.isEmpty()) }
-            .map { errorChunk ->
-                when (errorChunk) {
-                    is KotlinErrorAnalyzer.ErrorPart.CodeLink -> hyperlink("foo.kts:$errorChunk") { // TODO: inject temp file name
+            .map { errorPart ->
+                when (errorPart) {
+                    is KotlinErrorAnalyzer.ErrorPart.CodeLink -> hyperlink("foo.kts:$errorPart") { // TODO: inject temp file name
                         style {
                             textFill = Color.BLUE
                         }
-                        setOnMouseClicked { codeInput.setCursorAt(errorChunk.line, errorChunk.column ?: 1) }
+                        setOnMouseClicked { codeInput.setCursorAt(errorPart.line, errorPart.column ?: 1) }
                     }
-                    is KotlinErrorAnalyzer.ErrorPart.Text -> text(errorChunk.text)
+                    is KotlinErrorAnalyzer.ErrorPart.Text -> text(errorPart.text)
                 }
             } + Text("\n")
 
