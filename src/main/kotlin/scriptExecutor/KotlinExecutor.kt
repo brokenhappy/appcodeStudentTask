@@ -4,19 +4,20 @@ import org.intellij.lang.annotations.Language
 import java.io.Closeable
 import java.io.File
 import java.io.FileWriter
+import java.lang.RuntimeException
+import javax.inject.Inject
 
-class KotlinExecutor(
-    private val warningResolver: KotlinCompileCommonWarningResolver
-) {
-    class AlreadyRunningException: Exception()
+class KotlinExecutor @Inject constructor(
+    private val warningResolver: KotlinCompileCommonWarningResolver,
+) : ScriptExecutor {
+    class AlreadyRunningException : RuntimeException()
 
     @Volatile
     private var isRunning = false
 
-    private fun Process.isNotFinished() = kotlin.runCatching { exitValue() }.isFailure
+    private fun Process.isNotFinished() = runCatching { exitValue() }.isFailure
 
-    @Throws(AlreadyRunningException::class)
-    fun run(
+    override fun run(
         @Language("kts") kotlinScript: String,
         inputEvent: (String) -> Unit,
         errorEvent: (String) -> Unit,
@@ -48,10 +49,8 @@ class KotlinExecutor(
 
 
     private fun startScriptRunnerProcessDisablingWarnings(scriptPath: String) =
-        ProcessBuilder(
-            "kotlinc", "-script", scriptPath, "-nowarn"
-        )
-        .start()
+        ProcessBuilder("kotlinc", "-script", scriptPath, "-nowarn")
+            .start()
 
     private fun createTemporaryScriptFile(kotlinScript: String) = object : Closeable {
         private val file = File("foo.kts").apply { // TODO:  use injected file
@@ -60,8 +59,7 @@ class KotlinExecutor(
             FileWriter(absoluteFile).use { it.write(kotlinScript) }
         }
 
-        val absolutePath
-            get() = file.absolutePath
+        val absolutePath get() = file.absolutePath
 
         override fun close() {
             file.delete()

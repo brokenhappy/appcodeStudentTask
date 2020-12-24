@@ -1,25 +1,21 @@
 package codeHighlighter
 
-import org.intellij.lang.annotations.Language
 import java.awt.Color
+import javax.inject.Inject
 
-class KotlinCodeHighlighter(val keyWords: Map<String, Color>) {
-    sealed class CodePart {
-        data class Default(val code: String): CodePart()
-        data class Keyword(val keyWord: String, val color: Color): CodePart()
-    }
+class KotlinCodeHighlighter @Inject constructor() : CodeHighlighter {
+    private val highlighter = KeywordBasedCodeHighlighter(mapOf(
+        "package" to Color.ORANGE,
+        "import" to Color.ORANGE,
+        "class" to Color.ORANGE,
+        "fun" to Color.ORANGE,
+        "return" to Color.ORANGE,
+        "val" to Color.ORANGE,
+        "inline" to Color.ORANGE,
+        "tailrec" to Color.ORANGE,
+        "private" to Color.ORANGE,
+        "override" to Color.ORANGE,
+    ))
 
-    fun highlight(@Language("kts") script: String) = sequence {
-        var currentSearchingFromIndex = 0
-        "[A-z0-9]+".toRegex().findAll(script)
-            .filter { it.value in keyWords }
-            .forEach { match ->
-                yield(CodePart.Default(script.substring(currentSearchingFromIndex, match.range.first)))
-                yield(CodePart.Keyword(match.value, keyWords[match.value] ?: throw IllegalStateException()))
-                currentSearchingFromIndex = match.range.last + 1
-            }
-
-        yield(CodePart.Default(script.substring(currentSearchingFromIndex)))
-    }
-
+    override fun highlight(script: String) = highlighter.highlight(script)
 }

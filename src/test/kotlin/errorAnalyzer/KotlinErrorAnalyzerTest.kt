@@ -1,6 +1,6 @@
 package errorAnalyzer
 
-import errorAnalyzer.KotlinErrorAnalyzer.ErrorPart
+import errorAnalyzer.ErrorAnalyzer.ErrorPart
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

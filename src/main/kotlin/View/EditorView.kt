@@ -1,5 +1,6 @@
 package View
 
+import errorAnalyzer.ErrorAnalyzer
 import errorAnalyzer.KotlinErrorAnalyzer
 import javafx.application.Platform
 import javafx.scene.control.Button
@@ -8,13 +9,12 @@ import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
+import scriptExecutor.DaggerScriptExecutorComponent
 import scriptExecutor.ExitCode
-import scriptExecutor.KotlinCompileExecutingCommonWarningResolver
-import scriptExecutor.KotlinExecutor
 import tornadofx.*
 
 class EditorView : View() {
-    private val kotlinExecutor = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver())
+    private val kotlinExecutor = DaggerScriptExecutorComponent.create().getKotlinInstance()
     private val errorAnalyzer = KotlinErrorAnalyzer()
 
     private lateinit var codeOutput: Text
@@ -78,16 +78,16 @@ class EditorView : View() {
 
     private fun generateNodesForErrorLine(errorAnalyzer: KotlinErrorAnalyzer, errorLine: String) =
         errorAnalyzer.analyze("foo.kts", errorLine) // TODO: inject temp file name
-            .filter { !(it is KotlinErrorAnalyzer.ErrorPart.Text && it.text.isEmpty()) }
+            .filter { !(it is ErrorAnalyzer.ErrorPart.Text && it.text.isEmpty()) }
             .map { errorPart ->
                 when (errorPart) {
-                    is KotlinErrorAnalyzer.ErrorPart.CodeLink -> hyperlink("foo.kts:$errorPart") { // TODO: inject temp file name
+                    is ErrorAnalyzer.ErrorPart.CodeLink -> hyperlink("foo.kts:$errorPart") { // TODO: inject temp file name
                         style {
                             textFill = Color.BLUE
                         }
                         setOnMouseClicked { codeInput.setCursorAt(errorPart.line, errorPart.column ?: 1) }
                     }
-                    is KotlinErrorAnalyzer.ErrorPart.Text -> text(errorPart.text)
+                    is ErrorAnalyzer.ErrorPart.Text -> text(errorPart.text)
                 }
             } + Text("\n")
 

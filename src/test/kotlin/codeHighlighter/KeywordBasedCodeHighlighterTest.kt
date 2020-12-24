@@ -1,16 +1,16 @@
 package codeHighlighter
 
-import codeHighlighter.KotlinCodeHighlighter.CodePart
+import codeHighlighter.CodeHighlighter.CodePart
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.awt.Color
 
-class KotlinCodeHighlighterTest {
+class KeywordBasedCodeHighlighterTest {
     @Test
     fun `test empty script gives an empty default color part`() {
         assertEquals(
             listOf(CodePart.Default("")),
-            KotlinCodeHighlighter(mapOf()).highlight("").toList(),
+            KeywordBasedCodeHighlighter(mapOf()).highlight("").toList(),
         )
     }
 
@@ -18,7 +18,7 @@ class KotlinCodeHighlighterTest {
     fun `test script without keywords creates one default color part`() {
         assertEquals(
             listOf(CodePart.Default("123.toString()")),
-            KotlinCodeHighlighter(mapOf()).highlight("123.toString()").toList(),
+            KeywordBasedCodeHighlighter(mapOf()).highlight("123.toString()").toList(),
         )
     }
 
@@ -27,10 +27,10 @@ class KotlinCodeHighlighterTest {
         assertEquals(
             listOf(
                 CodePart.Default("123.toString(); "),
-                CodePart.Keyword("val", Color.ORANGE),
+                CodePart.Colored("val", Color.ORANGE),
                 CodePart.Default(" a = 3"),
             ),
-            KotlinCodeHighlighter(mapOf(
+            KeywordBasedCodeHighlighter(mapOf(
                 "val" to Color.ORANGE
             )).highlight("123.toString(); val a = 3").toList(),
         )
@@ -40,7 +40,7 @@ class KotlinCodeHighlighterTest {
     fun `test if one keyword is in part of word, should not highlight`() {
         assertEquals(
             listOf(CodePart.Default("123.evaluate()")),
-            KotlinCodeHighlighter(mapOf(
+            KeywordBasedCodeHighlighter(mapOf(
                 "val" to Color.ORANGE
             )).highlight("123.evaluate()").toList(),
         )

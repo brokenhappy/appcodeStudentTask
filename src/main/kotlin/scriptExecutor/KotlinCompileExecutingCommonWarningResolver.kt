@@ -1,6 +1,9 @@
 package scriptExecutor
 
-class KotlinCompileExecutingCommonWarningResolver() : KotlinCompileCommonWarningResolver {
+import javax.inject.Inject
+
+class KotlinCompileExecutingCommonWarningResolver @Inject constructor()
+    : KotlinCompileCommonWarningResolver {
     private val alwaysPresentWarnings by lazy {
         val process = ProcessBuilder("kotlinc", "-version")
             .start()

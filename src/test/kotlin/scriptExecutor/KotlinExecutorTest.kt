@@ -10,8 +10,7 @@ import kotlin.math.absoluteValue
 
 @Tag("slow")
 class KotlinExecutorTest {
-    private val commandProvider = KotlinCompileCommand("/Users/woutwerkman/.sdkman/candidates/kotlin/current/bin/kotlinc")
-    private val subject = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver(commandProvider), commandProvider)
+    private val subject = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver())
 
     @Test
     @Tag("slow")
