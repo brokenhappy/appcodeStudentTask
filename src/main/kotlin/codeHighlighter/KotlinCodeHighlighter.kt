@@ -18,5 +18,5 @@ class KotlinCodeHighlighter @Inject constructor() : CodeHighlighter {
         "override" to Color.ORANGE,
     ))
 
-    override fun highlight(@Language("kts") script: String) = highlighter.highlight(script)
+    override fun highlight(@Language("kts") code: String) = highlighter.highlight(code)
 }

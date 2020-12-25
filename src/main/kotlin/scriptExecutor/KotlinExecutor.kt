@@ -4,13 +4,11 @@ import org.intellij.lang.annotations.Language
 import java.io.Closeable
 import java.io.File
 import java.io.FileWriter
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 class KotlinExecutor @Inject constructor(
     private val warningResolver: KotlinCompileCommonWarningResolver,
 ) : ScriptExecutor {
-
     private fun Process.isNotFinished() = runCatching { exitValue() }.isFailure
 
     override fun run(
@@ -39,13 +37,12 @@ class KotlinExecutor @Inject constructor(
         }
     }
 
-
     private fun startScriptRunnerProcessDisablingWarnings(scriptPath: String) =
         ProcessBuilder("kotlinc", "-script", scriptPath, "-nowarn")
             .start()
 
     private fun createTemporaryScriptFile(kotlinScript: String) = object : Closeable {
-        private val file = File("foo.kts").apply { // TODO:  use injected file
+        private val file = File("foo.kts").apply {
             createNewFile()
             deleteOnExit()
             FileWriter(absoluteFile).use { it.write(kotlinScript) }
@@ -57,6 +54,4 @@ class KotlinExecutor @Inject constructor(
             file.delete()
         }
     }
-
-
 }

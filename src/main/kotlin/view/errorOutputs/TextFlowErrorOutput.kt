@@ -2,7 +2,6 @@ package view.errorOutputs
 
 import errorAnalyzer.ErrorAnalyzer.ErrorPart
 import errorAnalyzer.KotlinErrorAnalyzer
-import javafx.scene.Parent
 import javafx.scene.control.Hyperlink
 import javafx.scene.control.ScrollPane
 import javafx.scene.paint.Color

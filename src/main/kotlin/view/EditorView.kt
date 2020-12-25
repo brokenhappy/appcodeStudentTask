@@ -101,9 +101,7 @@ class EditorView : View() {
                     }
                 }
             )
-            Platform.runLater {
-                expectedTimeLeft.text = getStatusMessageFor(exitCode)
-            }
+            Platform.runLater { expectedTimeLeft.text = getStatusMessageFor(exitCode) }
         }
 
         override fun onEnd() = Platform.runLater {
