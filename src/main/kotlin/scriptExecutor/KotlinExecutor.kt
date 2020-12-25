@@ -14,11 +14,11 @@ class KotlinExecutor @Inject constructor(
     private fun Process.isNotFinished() = runCatching { exitValue() }.isFailure
 
     override fun run(
-        @Language("kts") kotlinScript: String,
+        @Language("kts") script: String,
         inputEvent: (String) -> Unit,
         errorEvent: (String) -> Unit,
     ): ExitCode {
-        createTemporaryScriptFile(kotlinScript).use { file ->
+        createTemporaryScriptFile(script).use { file ->
             val process = startScriptRunnerProcessDisablingWarnings(file.absolutePath)
 
             val errorReader = EventRaisingBlockingStreamLineReader(process.errorStream) { errorLine ->
