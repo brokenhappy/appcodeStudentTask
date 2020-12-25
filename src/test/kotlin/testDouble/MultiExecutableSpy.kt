@@ -5,20 +5,11 @@ import multiExecutor.MultiExecutor.MultiExecutable.OnProgressUpdateEvent
 
 class MultiExecutableSpy : MultiExecutor.MultiExecutable {
     var onStartCalls = 0
-        get() = field
-        private set(new) {
-            field = new
-        }
+        private set
     var executeCalls = 0
-        get() = field
-        private set(new) {
-            field = new
-        }
+        private set
     var onEndCalls = 0
-        get() = field
-        private set(new) {
-            field = new
-        }
+        private set
 
     private val _onProgressBarUpdateCalls = mutableListOf<OnProgressUpdateEvent>()
     val onProgressBarUpdateCalls get() = _onProgressBarUpdateCalls.toList()
