@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 
 class KotlinErrorAnalyzer @Inject constructor() : ErrorAnalyzer {
-    override fun analyze(scriptFileName: String, errors: String) = sequence {
+    override fun splitIntoCodeParts(scriptFileName: String, errors: String) = sequence {
         val regexToFindPathName = "(/[A-z0-9 ]+)*/?${scriptFileName.replace(".", "\\.")}:(\\d+)(:(\\d+))?".toRegex()
 
         var currentSearchingIndex = 0

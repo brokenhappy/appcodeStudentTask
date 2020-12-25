@@ -16,5 +16,5 @@ interface ErrorAnalyzer {
         data class Text(val text: String) : ErrorPart()
     }
 
-    fun analyze(scriptFileName: String, errors: String): Sequence<ErrorPart>
+    fun splitIntoCodeParts(scriptFileName: String, errors: String): Sequence<ErrorPart>
 }
