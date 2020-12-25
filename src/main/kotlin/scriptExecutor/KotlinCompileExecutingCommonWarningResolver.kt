@@ -1,7 +1,9 @@
 package scriptExecutor
 
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class KotlinCompileExecutingCommonWarningResolver @Inject constructor()
     : KotlinCompileCommonWarningResolver {
     private val alwaysPresentWarnings by lazy {
