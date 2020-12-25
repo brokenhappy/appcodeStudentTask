@@ -16,6 +16,7 @@ import scriptExecutor.DaggerScriptExecutorComponent
 import scriptExecutor.ExitCode
 import tornadofx.*
 import view.errorOutputs.DaggerErrorOutputComponent
+import view.util.CountdownTimer
 
 /**
  * I'm the least proud of this view package. The view code is the only part I did NOT write TDD and thus was the
@@ -39,9 +40,12 @@ class EditorView : View() {
     private lateinit var expectedTimeLeft: Text
     private lateinit var codeStatus: TextField
 
+    private var lastExitCode: ExitCode? = null
+    private var countdownTimer: CountdownTimer? = null
+
     override val root = splitpane(Orientation.VERTICAL) {
         style {
-            font = Font.font(java.awt.Font.MONOSPACED, 10.0)
+            font = Font.font(java.awt.Font.MONOSPACED, 14.0)
         }
         splitpane {
             setDividerPosition(0, 0.5)
@@ -87,7 +91,7 @@ class EditorView : View() {
         }
 
         override fun execute() {
-            val exitCode = kotlinExecutor.run(
+            lastExitCode = kotlinExecutor.run(
                 kotlinScript = codeInput.text.toString(),
                 inputEvent = { outputLine -> Platform.runLater { codeOutput.children += Text(outputLine + "\n") } },
                 errorEvent = { errorLine ->
@@ -101,20 +105,24 @@ class EditorView : View() {
                     }
                 }
             )
-            Platform.runLater { expectedTimeLeft.text = getStatusMessageFor(exitCode) }
         }
 
         override fun onEnd() = Platform.runLater {
+            countdownTimer?.cancel()
             executeButton.isDisable = false
             codeProgress.progress = 1.0
             codeProgress.fade(Duration.seconds(1.0), 0.0)
+            Platform.runLater {
+                expectedTimeLeft.text = lastExitCode?.let { getStatusMessageFor(it) } ?: "No run performed"
+            }
         }
 
         override fun onProgressUpdate(event: OnProgressUpdateEvent) = Platform.runLater {
             codeOutput.children += Text("--------------------- Run: ${event.iterationCount + 1}\n")
             errorOutput.addRunSeparator(event.iterationCount)
             codeProgress.progress = event.progress
-            expectedTimeLeft.text = "About %.2f seconds left".format(event.estimatedTimeLeftMs / 1000.0)
+            countdownTimer = (countdownTimer ?: CountdownTimer(expectedTimeLeft.textProperty()))
+                .also { it.setTime(event.estimatedTimeLeftMs) }
         }
     }
 
