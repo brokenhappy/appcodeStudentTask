@@ -1,8 +1,10 @@
 package multiExecutor
 
+import org.jetbrains.annotations.Contract
 import javax.inject.Inject
 
-class DefaultMultiExecutor @Inject constructor(private val executionTimeMeasurer: ExecutionTimeMeasurer) : MultiExecutor {
+class DefaultMultiExecutor @Inject constructor(private val executionTimeMeasurer: ExecutionTimeMeasurer) :
+    MultiExecutor {
 
     private class TimeLeftEstimator {
         private val previousTimes = mutableListOf<Int>()
@@ -10,6 +12,7 @@ class DefaultMultiExecutor @Inject constructor(private val executionTimeMeasurer
             previousTimes.add(time)
         }
 
+        @Contract(pure = true)
         fun averageTimeBiasedTowardsLast(): Double {
             val weights = (previousTimes.size downTo 1).map { 1.0 / it }
             val total = weights.sum()

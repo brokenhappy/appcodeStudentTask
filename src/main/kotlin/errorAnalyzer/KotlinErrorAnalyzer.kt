@@ -1,9 +1,11 @@
 package errorAnalyzer
 
+import org.jetbrains.annotations.Contract
 import javax.inject.Inject
 
 
 class KotlinErrorAnalyzer @Inject constructor() : ErrorAnalyzer {
+    @Contract(pure = true)
     override fun splitIntoCodeParts(scriptFileName: String, errors: String) = sequence {
         val regexToFindPathName = "(/[A-z0-9 ]+)*/?${scriptFileName.replace(".", "\\.")}:(\\d+)(:(\\d+))?".toRegex()
 

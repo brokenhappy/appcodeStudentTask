@@ -1,9 +1,9 @@
 package errorAnalyzer
 
 import errorAnalyzer.ErrorAnalyzer.ErrorPart.CodeLink
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import java.lang.Exception
 
 internal class CodeLinkTest {
     @Test
@@ -35,7 +35,7 @@ internal class CodeLinkTest {
                 0123
                 5
                 7.9
-                I wasn’t originally going to get a brain transplant, but then I changed my mind
+                I wasn't originally going to get a brain transplant, but then I changed my mind
             """.trimIndent()),
         )
     }

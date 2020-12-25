@@ -12,6 +12,7 @@ import javafx.util.converter.NumberStringConverter
 import multiExecutor.DaggerMultiExecutorComponent
 import multiExecutor.MultiExecutor
 import multiExecutor.MultiExecutor.MultiExecutable.OnProgressUpdateEvent
+import org.jetbrains.annotations.Contract
 import scriptExecutor.DaggerScriptExecutorComponent
 import scriptExecutor.ExitCode
 import tornadofx.*
@@ -140,6 +141,7 @@ class EditorView : View() {
         }.start()
     }
 
+    @Contract(pure = true)
     private fun getStatusMessageFor(exitCode: ExitCode) =
         if (exitCode.isNonZero())
             "Last exit code:\n $exitCode"

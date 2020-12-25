@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane
 import javafx.scene.paint.Color
 import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
+import org.jetbrains.annotations.Contract
 import tornadofx.addChildIfPossible
 import tornadofx.style
 import javax.inject.Inject
@@ -16,10 +17,10 @@ class TextFlowErrorOutput @Inject constructor(val errorAnalyzer: KotlinErrorAnal
 
     override fun attachTo(scrollPane: ScrollPane) {
         scrollPane.addChildIfPossible(textFlow)
-        ensureParentScrollDownWhenContentGrows(scrollPane)
+        ensureParentScrollsDownWhenContentGrows(scrollPane)
     }
 
-    private fun ensureParentScrollDownWhenContentGrows(scrollPane: ScrollPane) {
+    private fun ensureParentScrollsDownWhenContentGrows(scrollPane: ScrollPane) {
         scrollPane.vvalueProperty().bind(textFlow.heightProperty())
     }
 
@@ -32,6 +33,7 @@ class TextFlowErrorOutput @Inject constructor(val errorAnalyzer: KotlinErrorAnal
         )
     }
 
+    @Contract(pure = true)
     private fun mapErrorPartToTextFlowChild(errorPart: ErrorPart, onLinkClick: (ErrorPart.CodeLink) -> Unit) =
         when (errorPart) {
             is ErrorPart.CodeLink -> Hyperlink("foo.kts:$errorPart").also { link ->

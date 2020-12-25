@@ -15,7 +15,7 @@ Every package (but `view`) has an interface explaining the behaviour of the pack
 are named after how the interface is implemented. Then there also is a `Component` which exposes the necessary
 behaviour.
 
-Please note that these conventions I chose are not based on a strong opinion, this is my first time using DI on JVM, and
+Please note that the conventions I chose are not based on a strong opinion, this is my first time using DI on JVM, and
 I am very willing to receive feedback and change my style for the better.
 
 ## installation

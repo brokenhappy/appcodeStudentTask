@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Tags
 import org.junit.jupiter.api.Test
 import tornadofx.isLong
-import java.lang.AssertionError
 import kotlin.math.absoluteValue
 
 @Tag("slow")
@@ -104,6 +103,7 @@ internal class KotlinExecutorTest {
             "$message (was: $streamResult)"
         )
     }
+
     @Test
     @Tag("DependsOnSystemTime")
     fun `test assertion to check wether a stream is empty enough to be considered 'an empty stream'`() {

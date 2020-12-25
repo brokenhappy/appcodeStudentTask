@@ -1,6 +1,7 @@
 package scriptExecutor
 
 import org.intellij.lang.annotations.Language
+import org.jetbrains.annotations.Contract
 import java.io.Closeable
 import java.io.File
 import java.io.FileWriter
@@ -9,6 +10,7 @@ import javax.inject.Inject
 class KotlinExecutor @Inject constructor(
     private val warningResolver: KotlinCompileCommonWarningResolver,
 ) : ScriptExecutor {
+    @Contract(pure = true)
     private fun Process.isNotFinished() = runCatching { exitValue() }.isFailure
 
     override fun run(

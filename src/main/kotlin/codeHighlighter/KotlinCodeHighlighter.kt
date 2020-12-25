@@ -1,6 +1,7 @@
 package codeHighlighter
 
 import org.intellij.lang.annotations.Language
+import org.jetbrains.annotations.Contract
 import java.awt.Color
 import javax.inject.Inject
 
@@ -18,5 +19,6 @@ class KotlinCodeHighlighter @Inject constructor() : CodeHighlighter {
         "override" to Color.ORANGE,
     ))
 
+    @Contract(pure = true)
     override fun highlight(@Language("kts") code: String) = highlighter.highlight(code)
 }

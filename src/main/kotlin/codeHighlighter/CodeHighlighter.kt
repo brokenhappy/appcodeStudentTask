@@ -1,5 +1,6 @@
 package codeHighlighter
 
+import org.jetbrains.annotations.Contract
 import java.awt.Color
 
 /**
@@ -13,5 +14,6 @@ interface CodeHighlighter {
         data class Colored(val code: String, val color: Color) : CodePart()
     }
 
+    @Contract(pure = true)
     fun highlight(code: String): Sequence<CodePart>
 }

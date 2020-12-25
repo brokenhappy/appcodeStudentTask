@@ -3,7 +3,10 @@ package scriptExecutor
 import java.io.InputStream
 
 
-class EventRaisingBlockingStreamLineReader(private val stream: InputStream, private val lineReadEvent: (String) -> Unit) {
+class EventRaisingBlockingStreamLineReader(
+    private val stream: InputStream,
+    private val lineReadEvent: (String) -> Unit,
+) {
     private var currentWorkingString: String? = null
 
     fun performRead() {
@@ -30,5 +33,4 @@ class EventRaisingBlockingStreamLineReader(private val stream: InputStream, priv
         val remainder = currentWorkingString ?: return
         lineReadEvent(remainder)
     }
-
 }

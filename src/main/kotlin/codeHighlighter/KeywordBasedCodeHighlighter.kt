@@ -1,9 +1,11 @@
 package codeHighlighter
 
 import codeHighlighter.CodeHighlighter.CodePart
+import org.jetbrains.annotations.Contract
 import java.awt.Color
 
-class KeywordBasedCodeHighlighter(val keyWords: Map<String, Color>) : CodeHighlighter {
+class KeywordBasedCodeHighlighter(private val keyWords: Map<String, Color>) : CodeHighlighter {
+    @Contract(pure = true)
     override fun highlight(code: String) = sequence {
         var currentSearchingFromIndex = 0
         "[A-z0-9]+".toRegex().findAll(code)

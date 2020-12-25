@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class KotlinErrorAnalyzerTest {
-
     @Test
     fun `test empty error gives empty text`() {
         assertEquals(
