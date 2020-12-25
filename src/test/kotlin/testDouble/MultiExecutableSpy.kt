@@ -1,6 +1,7 @@
 package testDouble
 
 import multiExecutor.MultiExecutor
+import multiExecutor.MultiExecutor.MultiExecutable.OnProgressUpdateEvent
 
 class MultiExecutableSpy : MultiExecutor.MultiExecutable {
     var onStartCalls = 0
@@ -19,8 +20,8 @@ class MultiExecutableSpy : MultiExecutor.MultiExecutable {
             field = new
         }
 
-    private val _onProgressBarUpdateCalls = mutableListOf<Pair<Double, Int>>()
-    val onProgressBarUpdateCalls: List<Pair<Double, Int>> get() = _onProgressBarUpdateCalls
+    private val _onProgressBarUpdateCalls = mutableListOf<OnProgressUpdateEvent>()
+    val onProgressBarUpdateCalls get() = _onProgressBarUpdateCalls.toList()
 
     override fun onStart() {
         onStartCalls++
@@ -35,8 +36,8 @@ class MultiExecutableSpy : MultiExecutor.MultiExecutable {
         onEndCalls++
     }
 
-    override fun onProgressUpdate(progress: Double, estimatedTimeLeftMs: Int) {
-        _onProgressBarUpdateCalls.add(progress to estimatedTimeLeftMs)
+    override fun onProgressUpdate(event: OnProgressUpdateEvent) {
+        _onProgressBarUpdateCalls.add(event)
     }
 
 }

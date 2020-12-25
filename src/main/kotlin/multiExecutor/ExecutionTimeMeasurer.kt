@@ -1,5 +1,5 @@
 package multiExecutor
 
 interface ExecutionTimeMeasurer {
-    fun measureTime(runnable: Runnable): Int
+    fun measure(runnable: Runnable): Int
 }
