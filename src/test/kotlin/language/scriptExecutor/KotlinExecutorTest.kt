@@ -1,4 +1,4 @@
-package scriptExecutor
+package language.scriptExecutor
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
@@ -9,7 +9,7 @@ import kotlin.math.absoluteValue
 
 @Tag("slow")
 internal class KotlinExecutorTest {
-    private val subject = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver())
+    private val subject = KotlinExecutor(KotlinCompileExecutingCommonWarningResolver(), TemporaryScriptFileProvider())
 
     @Test
     @Tag("slow")
