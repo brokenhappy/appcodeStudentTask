@@ -1,6 +1,5 @@
 package view
 
-import errorAnalyzer.ErrorAnalyzer.ErrorPart
 import javafx.application.Platform
 import javafx.geometry.Orientation
 import javafx.scene.control.*
@@ -9,12 +8,14 @@ import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.util.Duration
 import javafx.util.converter.NumberStringConverter
+import language.DaggerLanguageFactoryComponent
+import language.LanguageFactory.SupportedLanguage
+import language.errorAnalyzer.ErrorAnalyzer.ErrorPart
+import language.scriptExecutor.ExitCode
 import multiExecutor.DaggerMultiExecutorComponent
 import multiExecutor.MultiExecutor
 import multiExecutor.MultiExecutor.MultiExecutable.OnProgressUpdateEvent
 import org.jetbrains.annotations.Contract
-import scriptExecutor.DaggerScriptExecutorComponent
-import scriptExecutor.ExitCode
 import tornadofx.*
 import view.errorOutputs.DaggerErrorOutputComponent
 import view.util.CountdownTimer
@@ -30,16 +31,18 @@ import view.util.CountdownTimer
  * Please, dont hesitate to give me advice and feedback, but evaluate my skills based on the "backend" ;)
  */
 class EditorView : View() {
-    private val kotlinExecutor = DaggerScriptExecutorComponent.create().getKotlinInstance()
+    private val languageFactory = DaggerLanguageFactoryComponent.create().getInstance()
+    private var currentLanguage = languageFactory.createFor(SupportedLanguage.KOTLIN)
     private val multiExecutor = DaggerMultiExecutorComponent.create().getInstance()
     private val errorOutput = DaggerErrorOutputComponent.create().getInstance()
 
     private lateinit var codeOutput: TextFlow
+    private lateinit var languageChoice: ChoiceBox<SupportedLanguage>
     private lateinit var executeButton: Button
     private lateinit var codeInput: TextArea
     private lateinit var codeProgress: ProgressBar
     private lateinit var expectedTimeLeft: Text
-    private lateinit var codeStatus: TextField
+    private lateinit var numberOfTimesToExecuteInput: TextField
 
     private var lastExitCode: ExitCode? = null
     private var countdownTimer: CountdownTimer? = null
@@ -65,14 +68,21 @@ class EditorView : View() {
         splitpane {
             setDividerPosition(0, 0.2)
             vbox {
+                languageChoice = choicebox(values = listOf(SupportedLanguage.KOTLIN, SupportedLanguage.SWIFT)) {
+                    value = SupportedLanguage.KOTLIN
+                    setOnAction {
+                        currentLanguage = languageFactory.createFor(value)
+                        runProcess.onEnd()
+                    }
+                }
                 executeButton = button("Execute!") { setOnMouseClicked { runScript() } }
-                label("how often do you want to execute?")
-                codeStatus = textfield {
+                label("Number of executions:")
+                numberOfTimesToExecuteInput = textfield {
                     textFormatter = TextFormatter(NumberStringConverter())
                     text = "1"
                 }
                 codeProgress = progressbar { opacity = 0.0 }
-                expectedTimeLeft = text()
+                expectedTimeLeft = text("No run performed")
             }
             scrollpane {
                 errorOutput.attachTo(this)
@@ -83,6 +93,8 @@ class EditorView : View() {
     private val runProcess = object : MultiExecutor.MultiExecutable {
         override fun onStart() = Platform.runLater {
             executeButton.isDisable = true
+            languageChoice.isDisable = true
+            numberOfTimesToExecuteInput.isDisable = true
             codeProgress.progress = 0.0
             codeProgress.opacity = 1.0
             expectedTimeLeft.opacity = 1.0
@@ -92,8 +104,8 @@ class EditorView : View() {
         }
 
         override fun execute() {
-            lastExitCode = kotlinExecutor.run(
-                kotlinScript = codeInput.text.toString(),
+            lastExitCode = currentLanguage.executor.run(
+                script = codeInput.text.toString(),
                 inputEvent = { outputLine -> Platform.runLater { codeOutput.children += Text(outputLine + "\n") } },
                 errorEvent = { errorLine ->
                     Platform.runLater {
@@ -111,11 +123,11 @@ class EditorView : View() {
         override fun onEnd() = Platform.runLater {
             countdownTimer?.cancel()
             executeButton.isDisable = false
+            languageChoice.isDisable = false
+            numberOfTimesToExecuteInput.isDisable = false
             codeProgress.progress = 1.0
             codeProgress.fade(Duration.seconds(1.0), 0.0)
-            Platform.runLater {
-                expectedTimeLeft.text = lastExitCode?.let { getStatusMessageFor(it) } ?: "No run performed"
-            }
+            expectedTimeLeft.text = lastExitCode?.let { getStatusMessageFor(it) } ?: "No run performed"
         }
 
         override fun onProgressUpdate(event: OnProgressUpdateEvent) = Platform.runLater {
@@ -134,7 +146,7 @@ class EditorView : View() {
 
     private fun runScript() {
         Thread {
-            val numberOfTimesToExecute = codeStatus.text
+            val numberOfTimesToExecute = numberOfTimesToExecuteInput.text
                 .replace("[,.]".toRegex(), "")
                 .toIntOrNull() ?: 1
             multiExecutor.execute(numberOfTimesToExecute, runProcess)
@@ -143,8 +155,6 @@ class EditorView : View() {
 
     @Contract(pure = true)
     private fun getStatusMessageFor(exitCode: ExitCode) =
-        if (exitCode.isNonZero())
-            "Last exit code:\n $exitCode"
-        else
-            "Last run was successful"
+        if (exitCode.isNonZero()) "Last exit code:\n $exitCode"
+        else "Last run was successful"
 }

@@ -1,4 +1,4 @@
-package scriptExecutor
+package language.scriptExecutor
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

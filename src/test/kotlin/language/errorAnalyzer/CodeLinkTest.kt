@@ -1,6 +1,6 @@
-package errorAnalyzer
+package language.errorAnalyzer
 
-import errorAnalyzer.ErrorAnalyzer.ErrorPart.CodeLink
+import language.errorAnalyzer.ErrorAnalyzer.ErrorPart.CodeLink
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

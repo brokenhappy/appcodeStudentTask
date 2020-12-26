@@ -1,4 +1,4 @@
-package scriptExecutor
+package language.scriptExecutor
 
 import org.jetbrains.annotations.Contract
 import javax.inject.Inject

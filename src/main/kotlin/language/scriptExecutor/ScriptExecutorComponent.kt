@@ -1,4 +1,4 @@
-package scriptExecutor
+package language.scriptExecutor
 
 import dagger.Component
 import dagger.Module
@@ -15,4 +15,6 @@ interface ScriptExecutorComponent {
     }
 
     fun getKotlinInstance(): KotlinExecutor
+
+    fun getSwiftInstance(): SwiftExecutor
 }

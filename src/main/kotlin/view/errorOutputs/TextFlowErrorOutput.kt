@@ -1,7 +1,7 @@
 package view.errorOutputs
 
-import errorAnalyzer.ErrorAnalyzer.ErrorPart
-import errorAnalyzer.KotlinErrorAnalyzer
+import language.errorAnalyzer.ErrorAnalyzer.ErrorPart
+import language.errorAnalyzer.KotlinAndSwiftErrorAnalyzer
 import javafx.scene.control.Hyperlink
 import javafx.scene.control.ScrollPane
 import javafx.scene.paint.Color
@@ -12,7 +12,7 @@ import tornadofx.addChildIfPossible
 import tornadofx.style
 import javax.inject.Inject
 
-class TextFlowErrorOutput @Inject constructor(val errorAnalyzer: KotlinErrorAnalyzer) : ErrorOutput {
+class TextFlowErrorOutput @Inject constructor(val errorAnalyzer: KotlinAndSwiftErrorAnalyzer) : ErrorOutput {
     private val textFlow = TextFlow()
 
     override fun attachTo(scrollPane: ScrollPane) {
@@ -26,7 +26,7 @@ class TextFlowErrorOutput @Inject constructor(val errorAnalyzer: KotlinErrorAnal
 
     override fun addLine(line: String, onLinkClick: (ErrorPart.CodeLink) -> Unit) {
         textFlow.children.addAll(
-            errorAnalyzer.splitIntoCodeParts("foo.kts", line)
+            errorAnalyzer.splitIntoCodeParts(line)
                 .filter { !(it is ErrorPart.Text && it.text.isEmpty()) }
                 .map { errorPart -> mapErrorPartToTextFlowChild(errorPart, onLinkClick) }
                 + Text("\n")
@@ -36,7 +36,7 @@ class TextFlowErrorOutput @Inject constructor(val errorAnalyzer: KotlinErrorAnal
     @Contract(pure = true)
     private fun mapErrorPartToTextFlowChild(errorPart: ErrorPart, onLinkClick: (ErrorPart.CodeLink) -> Unit) =
         when (errorPart) {
-            is ErrorPart.CodeLink -> Hyperlink("foo.kts:$errorPart").also { link ->
+            is ErrorPart.CodeLink -> Hyperlink("script:$errorPart").also { link ->
                 link.style {
                     textFill = Color.BLUE
                 }

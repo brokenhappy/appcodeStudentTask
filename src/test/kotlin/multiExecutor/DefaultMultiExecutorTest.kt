@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import testDouble.FakeExecutionTimeMeasurer
 import testDouble.MultiExecutableSpy
 
-class DefaultMultiExecutorTest {
+internal class DefaultMultiExecutorTest {
     @Test
     fun `test if executes 0 times, its only started and ended`() {
         val spy = MultiExecutableSpy()

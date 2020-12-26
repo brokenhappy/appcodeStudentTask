@@ -1,6 +1,6 @@
-package codeHighlighter
+package language.codeHighlighter
 
-import codeHighlighter.CodeHighlighter.CodePart
+import language.codeHighlighter.CodeHighlighter.CodePart
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.awt.Color

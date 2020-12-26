@@ -3,7 +3,7 @@ package testDouble
 import multiExecutor.MultiExecutor
 import multiExecutor.MultiExecutor.MultiExecutable.OnProgressUpdateEvent
 
-class MultiExecutableSpy : MultiExecutor.MultiExecutable {
+internal class MultiExecutableSpy : MultiExecutor.MultiExecutable {
     var onStartCalls = 0
         private set
     var executeCalls = 0

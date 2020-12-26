@@ -1,6 +1,6 @@
-package codeHighlighter
+package language.codeHighlighter
 
-import codeHighlighter.CodeHighlighter.CodePart
+import language.codeHighlighter.CodeHighlighter.CodePart
 import org.jetbrains.annotations.Contract
 import java.awt.Color
 

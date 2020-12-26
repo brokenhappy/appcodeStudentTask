@@ -1,6 +1,6 @@
 package view.errorOutputs
 
-import errorAnalyzer.ErrorAnalyzer.ErrorPart.CodeLink
+import language.errorAnalyzer.ErrorAnalyzer.ErrorPart.CodeLink
 import javafx.scene.control.ScrollPane
 
 interface ErrorOutput {
