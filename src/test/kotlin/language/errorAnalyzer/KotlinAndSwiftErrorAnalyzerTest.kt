@@ -4,12 +4,12 @@ import language.errorAnalyzer.ErrorAnalyzer.ErrorPart
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class KotlinErrorAnalyzerTest {
+internal class KotlinAndSwiftErrorAnalyzerTest {
     @Test
     fun `test empty error gives empty text`() {
         assertEquals(
             listOf(ErrorPart.Text("")),
-            KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts("test.kts", "").toList(),
+            KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts("").toList(),
         )
     }
 
@@ -17,7 +17,7 @@ internal class KotlinErrorAnalyzerTest {
     fun `test one error that does not contain file path gives only one text blob`() {
         assertEquals(
             listOf(ErrorPart.Text("error on line bla")),
-            KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts("test.kts", "error on line bla").toList(),
+            KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts("error on line bla").toList(),
         )
     }
 
@@ -30,8 +30,7 @@ internal class KotlinErrorAnalyzerTest {
                 ErrorPart.Text(")"),
             ),
             KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts(
-                "foo.kts",
-                "error: unresolved reference: screee (foo.kts:1:1)",
+                "error: unresolved reference: screee (script.kts:1:1)",
             ).toList()
         )
     }
@@ -47,8 +46,7 @@ internal class KotlinErrorAnalyzerTest {
                 ErrorPart.Text(")"),
             ),
             KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts(
-                "foo.kts",
-                "error: unresolved reference: screee (foo.kts:1:1) lol (foo.kts:3:5)",
+                "error: unresolved reference: screee (script.kts:1:1) lol (script.kts:3:5)",
             ).toList()
         )
     }
@@ -62,8 +60,7 @@ internal class KotlinErrorAnalyzerTest {
                 ErrorPart.Text(": error: unresolved reference: screee"),
             ),
             KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts(
-                "foo.kts",
-                "/projects/AppCodeStudentTask/foo.kts:2:9: error: unresolved reference: screee",
+                "/projects/AppCodeStudentTask/script.kts:2:9: error: unresolved reference: screee",
             ).toList()
         )
     }
@@ -77,8 +74,7 @@ internal class KotlinErrorAnalyzerTest {
                 ErrorPart.Text(": error: unresolved reference: screee"),
             ),
             KotlinAndSwiftErrorAnalyzer().splitIntoCodeParts(
-                "foo.kts",
-                "/projects/AppCodeStudentTask/foo.kts:2: error: unresolved reference: screee",
+                "/projects/AppCodeStudentTask/script.kts:2: error: unresolved reference: screee",
             ).toList()
         )
     }

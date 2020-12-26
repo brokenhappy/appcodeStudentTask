@@ -1,9 +1,6 @@
 package language.scriptExecutor
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Tags
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import tornadofx.isLong
 import kotlin.math.absoluteValue
 
@@ -12,7 +9,7 @@ internal class SwiftExecutorTest {
 
     @Test
     @Tag("slow")
-    fun `test empty code provides no errors and no output`() {
+    fun `test empty code provides no errors and no output (ignoring live support notice)`() {
         val errors = mutableListOf<String>()
         val output = mutableListOf<String>()
 
@@ -22,13 +19,13 @@ internal class SwiftExecutorTest {
             { errors.add(it) }
         )
 
-        assertEmptyEnough(output, "empty code MUST not produce output")
+        assertEmptyEnough(output.drop(2), "empty code MUST not produce output")
         assertEmptyEnough(errors, "empty code MUST not produce errors")
     }
 
     @Test
     @Tag("slow")
-    fun `test compile error provides error but no output`() {
+    fun `test compile error provides error but no output (ignoring live support notice)`() {
         val errors = mutableListOf<String>()
         val output = mutableListOf<String>()
 
@@ -40,12 +37,12 @@ internal class SwiftExecutorTest {
 
         Assertions.assertEquals(4, errors.size)
         Assertions.assertTrue("error: use of unresolved identifier 'nonExistentFunction'" in errors.first())
-        assertEmptyEnough(output, "code MUST not produce output")
+        assertEmptyEnough(output.drop(2), "code MUST not produce output")
     }
 
     @Test
     @Tag("slow")
-    fun `test print statement goes to output`() {
+    fun `test print statement goes to output (ignoring live support notice)`() {
         val errors = mutableListOf<String>()
         val output = mutableListOf<String>()
 
@@ -55,21 +52,22 @@ internal class SwiftExecutorTest {
             { errors.add(it) }
         )
 
-        Assertions.assertEquals(listOf("test", ""), output)
+        Assertions.assertEquals(listOf("test", ""), output.drop(2))
         assertEmptyEnough(errors, "code MUST not produce errors")
     }
 
     @Test
     @Tags(Tag("slow"), Tag("unstable"), Tag("DependsOnSystemTime"))
+    @Disabled("Swift process blocks its streams, redirecting to file or other methods havent worked so far. Thus this behaviour is currently not included")
     fun `test that events are raised during execution`() {
         subject.run(
             """
                 import Foundation
 
                 print(Int(Date().timeIntervalSince1970 * 1000));
-                sleep(0.5)
+                sleep(10)
                 print(Int(Date().timeIntervalSince1970 * 1000));
-                sleep(0.5)
+                sleep(10)
             """,
             { outputLine ->
                 if (!outputLine.isLong())

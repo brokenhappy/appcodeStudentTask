@@ -106,7 +106,7 @@ internal class KotlinExecutorTest {
 
     @Test
     @Tag("DependsOnSystemTime")
-    fun `test assertion to check wether a stream is empty enough to be considered 'an empty stream'`() {
+    fun `test assertion to check whether a stream is empty enough to be considered 'an empty stream'`() {
         assertThrows(AssertionError::class.java) { assertEmptyEnough(listOf("not empty"), "") }
         assertThrows(AssertionError::class.java) { assertEmptyEnough(listOf("", ""), "") }
         assertEmptyEnough(listOf(""), "")

@@ -1,4 +1,4 @@
-package errorAnalyzer
+package language.errorAnalyzer
 
 import org.jetbrains.annotations.Contract
 
@@ -23,5 +23,5 @@ interface ErrorAnalyzer {
     }
 
     @Contract(pure = true)
-    fun splitIntoCodeParts(scriptFileName: String, errors: String): Sequence<ErrorPart>
+    fun splitIntoCodeParts(errors: String): Sequence<ErrorPart>
 }

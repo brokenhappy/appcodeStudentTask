@@ -1,4 +1,4 @@
-package scriptExecutor
+package language.scriptExecutor
 
 interface ScriptExecutor {
     fun run(

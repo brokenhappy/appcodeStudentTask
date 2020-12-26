@@ -1,4 +1,4 @@
-package codeHighlighter
+package language.codeHighlighter
 
 import org.jetbrains.annotations.Contract
 import java.awt.Color
