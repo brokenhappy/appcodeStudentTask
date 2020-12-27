@@ -36,7 +36,7 @@ internal class SwiftExecutorTest {
         )
 
         Assertions.assertEquals(4, errors.size)
-        Assertions.assertTrue("error: use of unresolved identifier 'nonExistentFunction'" in errors.first())
+        Assertions.assertTrue("nonExistentFunction()" in errors[1])
         assertEmptyEnough(output.drop(2), "code MUST not produce output")
     }
 
@@ -65,9 +65,9 @@ internal class SwiftExecutorTest {
                 import Foundation
 
                 print(Int(Date().timeIntervalSince1970 * 1000));
-                sleep(10)
+                usleep(200_000)
                 print(Int(Date().timeIntervalSince1970 * 1000));
-                sleep(10)
+                usleep(200_000)
             """,
             { outputLine ->
                 if (!outputLine.isLong())
