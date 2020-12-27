@@ -6,12 +6,19 @@ import java.io.FileWriter
 import javax.inject.Inject
 
 class TemporaryScriptFileProvider @Inject constructor() {
+    private val tempDirectory by lazy {
+        File("temp").apply {
+            mkdir()
+            ProcessBuilder("chmod", "-R", "777", absolutePath).start()
+        }
+    }
+
     interface TempFile : Closeable {
         val absolutePath: String
     }
 
     fun create(script: String): TempFile = object : TempFile {
-        private val file = File("script.kts").apply {
+        private val file = tempDirectory.resolve("script.kts").apply {
             createNewFile()
             deleteOnExit()
             FileWriter(absoluteFile).use { it.write(script) }
