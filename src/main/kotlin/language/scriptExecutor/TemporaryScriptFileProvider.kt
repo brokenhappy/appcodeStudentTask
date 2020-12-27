@@ -24,7 +24,7 @@ class TemporaryScriptFileProvider @Inject constructor() {
             FileWriter(absoluteFile).use { it.write(script) }
         }
 
-        override val absolutePath get() = file.absolutePath
+        override val absolutePath = file.absolutePath
 
         override fun close() {
             file.delete()
