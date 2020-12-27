@@ -9,7 +9,7 @@ class KotlinExecutor @Inject constructor(
 ) : ScriptExecutor {
     override fun run(
         @Language("kts") script: String,
-        inputEvent: (String) -> Unit,
+        outputEvent: (String) -> Unit,
         errorEvent: (String) -> Unit,
     ): ExitCode {
         temporaryScriptFileProvider.create(script).use { file ->
@@ -19,7 +19,7 @@ class KotlinExecutor @Inject constructor(
                         return@streamingErrorsTo
                     errorEvent(errorLine)
                 }
-                streamingOutputTo(inputEvent)
+                streamingOutputTo(outputEvent)
             }.execute()
         }
     }

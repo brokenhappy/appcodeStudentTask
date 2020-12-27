@@ -8,16 +8,16 @@ class SwiftExecutor @Inject constructor(
 ) : ScriptExecutor {
     override fun run(
         @Language("swift") script: String,
-        inputEvent: (String) -> Unit,
+        outputEvent: (String) -> Unit,
         errorEvent: (String) -> Unit,
     ): ExitCode {
         // TODO: Remove this if it is supported
-        inputEvent("// The output of Swift execution is currently not live. Swift's process streams are blocked during execution.")
-        inputEvent("")
+        outputEvent("// The output of Swift execution is currently not live. Swift's process streams are blocked during execution.")
+        outputEvent("")
         temporaryScriptFileProvider.create(script).use { file ->
             return EventRaisingCommandExecutor("/usr/bin/env", "swift", file.absolutePath) {
                 streamingErrorsTo(errorEvent)
-                streamingOutputTo(inputEvent)
+                streamingOutputTo(outputEvent)
             }.execute()
         }
     }

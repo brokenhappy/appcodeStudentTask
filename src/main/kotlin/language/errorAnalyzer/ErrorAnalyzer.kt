@@ -6,7 +6,7 @@ interface ErrorAnalyzer {
     sealed class ErrorPart {
         data class CodeLink(val line: Int, val column: Int?) : ErrorPart() {
             @Contract(pure = true)
-            override fun toString() = if (column == null) line.toString() else "$line:$column"
+            override fun toString() = column?.let { "$line:$it" } ?: "$line"
 
             @Contract(pure = true)
             fun resolveIndexIn(code: String): Int {

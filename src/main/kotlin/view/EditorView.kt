@@ -28,7 +28,7 @@ import view.util.CountdownTimer
  * not-so JavaFx treatment of state and the lack of tests verifying view logic.
  *
  * I truly wish I knew how to write well-tested frontend code, especially in TDD.
- * Please, dont hesitate to give me advice and feedback, but evaluate my skills based on the "backend" ;)
+ * Please, dont hesitate to give me advice and feedback, but please also evaluate my skills based on the "backend" ;)
  */
 class EditorView : View() {
     private val languageFactory = DaggerLanguageFactoryComponent.create().getInstance()
@@ -98,7 +98,7 @@ class EditorView : View() {
             codeProgress.progress = 0.0
             codeProgress.opacity = 1.0
             expectedTimeLeft.opacity = 1.0
-            expectedTimeLeft.text = "Executing.."
+            expectedTimeLeft.text = "Executing..."
             codeOutput.clear()
             errorOutput.clear()
         }
@@ -106,13 +106,13 @@ class EditorView : View() {
         override fun execute() {
             lastExitCode = currentLanguage.executor.run(
                 script = codeInput.text.toString(),
-                inputEvent = { outputLine -> Platform.runLater { codeOutput.children += Text(outputLine + "\n") } },
+                outputEvent = { outputLine -> Platform.runLater { codeOutput.children += Text(outputLine + "\n") } },
                 errorEvent = { errorLine ->
                     Platform.runLater {
                         errorOutput.addLine(
                             line = errorLine,
                             onLinkClick = { codeLink ->
-                                codeInput.setCursorAt(codeLink)
+                                codeInput.setCaretAt(codeLink)
                             },
                         )
                     }
@@ -139,7 +139,7 @@ class EditorView : View() {
         }
     }
 
-    private fun TextArea.setCursorAt(link: ErrorPart.CodeLink) {
+    private fun TextArea.setCaretAt(link: ErrorPart.CodeLink) {
         requestFocus()
         positionCaret(link.resolveIndexIn(text))
     }

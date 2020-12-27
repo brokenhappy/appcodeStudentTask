@@ -29,8 +29,8 @@ class EventRaisingCommandExecutor(private vararg val command: String, builder: B
         val inputReader = EventRaisingBlockingStreamLineReader(process.inputStream, onOutput)
 
         while (process.isNotFinished()) {
-            errorReader.performRead()
-            inputReader.performRead()
+            errorReader.readAndRaiseEvents()
+            inputReader.readAndRaiseEvents()
             Thread.sleep(10)
         }
 

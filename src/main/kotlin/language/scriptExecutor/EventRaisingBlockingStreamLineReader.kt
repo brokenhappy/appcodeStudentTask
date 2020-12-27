@@ -9,7 +9,7 @@ class EventRaisingBlockingStreamLineReader(
 ) {
     private var currentWorkingString: String? = null
 
-    fun performRead() {
+    fun readAndRaiseEvents() {
         val bytesToRead = stream.available()
         if (bytesToRead == 0)
             return
@@ -29,7 +29,7 @@ class EventRaisingBlockingStreamLineReader(
     }
 
     fun flush() {
-        performRead()
+        readAndRaiseEvents()
         val remainder = currentWorkingString ?: return
         lineReadEvent(remainder)
     }
